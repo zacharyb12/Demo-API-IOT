@@ -1,4 +1,5 @@
 // Création du générateur d'application Web avec les arguments de la ligne de commande -------------------------
+using API.CustomFormatters;
 using API.EmployedFolder;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,12 +12,18 @@ builder.Services.AddSingleton<IContext>(m => new FakeContext());
 
 
 // Ajoute le support des contrôleurs MVC à l'application
-builder.Services.AddControllers();
-//builder.Services.AddControllers(config =>
+//builder.Services.AddControllers();
+
+//builder.Services.AddControllers( options =>
 //{
-//    config.RespectBrowserAcceptHeader = true; // Respecte l'en-tête Accept du navigateur pour déterminer le format de réponse
-//    config.ReturnHttpNotAcceptable = true; // Retourne une erreur 406 si le format demandé n'est pas supporté
-//}).AddXmlDataContractSerializerFormatters();
+//    options.OutputFormatters.Add(new MyFormatters()); // Ajoute le formatter personnalisé pour gérer les réponses au format CSV
+//});
+
+builder.Services.AddControllers(config =>
+{
+    config.RespectBrowserAcceptHeader = true; // Respecte l'en-tête Accept du navigateur pour déterminer le format de réponse
+    config.ReturnHttpNotAcceptable = true; // Retourne une erreur 406 si le format demandé n'est pas supporté
+}).AddXmlSerializerFormatters();
 
 // Ajoute les services nécessaires pour explorer les points de terminaison de l'API (OpenAPI/Swagger)
 builder.Services.AddEndpointsApiExplorer();
